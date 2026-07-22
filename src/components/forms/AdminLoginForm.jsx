@@ -2,17 +2,13 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useNavigate } from 'react-router-dom'
-import { api } from '../lib/api'
-import { cn } from '../lib/utils'
-import logo from '../assets/EduTalaPH_Logo.png'
+import { useAuth } from '../../context/AuthContext'
+import { cn } from '../../lib/utils'
+import logo from '../../assets/EduTalaPH_Logo.png'
 
 const schema = z.object({
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(1, 'Please confirm your password'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
 })
 
 function EyeIcon() {
@@ -34,27 +30,17 @@ function EyeOffIcon() {
   )
 }
 
-export default function ResetPasswordForm({ token }) {
+export default function AdminLoginForm() {
   const [showPassword, setShowPassword] = useState(false)
-  const [apiError, setApiError] = useState(null)
-  const navigate = useNavigate()
-
+  const { login } = useAuth()
+  const { error: authError } = useAuth()
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { password: '', confirmPassword: '' },
+    defaultValues: { email: '', password: '' },
   })
 
   const onSubmit = async (data) => {
-    setApiError(null)
-    const res = await api.post('/api/v1/auth/reset-password', {
-      token,
-      password: data.password,
-    })
-    if (!res.success) {
-      setApiError(res.error?.message || 'Something went wrong. Please try again.')
-      return
-    }
-    navigate('/login')
+    await login(data.email, data.password)
   }
 
   const inputClass = 'input'
@@ -70,28 +56,40 @@ export default function ResetPasswordForm({ token }) {
   )
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-md space-y-4 sm:space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-4 sm:space-y-5">
       <div className="text-center mb-4 sm:mb-6">
         <img src={logo} alt="EduTala PH" className="h-16 sm:h-20 mx-auto mb-2 sm:mb-3" />
-        <h2 className="text-xl sm:text-2xl tracking-tight text-gray-900 dark:text-text font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>Reset Password</h2>
-        <p className="mt-1 text-sm text-gray-500 dark:text-text-subtle">Enter your new password</p>
+        <h2 className="text-xl sm:text-2xl tracking-tight text-gray-900 dark:text-text font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>EduTala PH</h2>
+        <p className="mt-1 text-sm text-gray-500 dark:text-text-subtle">Admin Control</p>
       </div>
 
-      {apiError && (
+      {authError && (
         <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm text-center">
-          {apiError}
+          {authError}
         </div>
       )}
 
       <div>
-        <label htmlFor="password" className={labelClass}>New Password</label>
+        <label htmlFor="admin-email" className={labelClass}>Email</label>
+        <input
+          id="admin-email"
+          type="email"
+          {...register('email')}
+          className={inputClass}
+          placeholder="admin@edutala.ph"
+        />
+        {errors.email && <p className={errorClass}>{errors.email.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="admin-password" className={labelClass}>Password</label>
         <div className="relative">
           <input
-            id="password"
+            id="admin-password"
             type={showPassword ? 'text' : 'password'}
             {...register('password')}
             className={cn(inputClass, 'pr-10')}
-            placeholder="At least 6 characters"
+            placeholder="Enter your password"
           />
           <button
             type="button"
@@ -109,18 +107,6 @@ export default function ResetPasswordForm({ token }) {
         {errors.password && <p className={errorClass}>{errors.password.message}</p>}
       </div>
 
-      <div>
-        <label htmlFor="confirmPassword" className={labelClass}>Confirm New Password</label>
-        <input
-          id="confirmPassword"
-          type={showPassword ? 'text' : 'password'}
-          {...register('confirmPassword')}
-          className={inputClass}
-          placeholder="Repeat your new password"
-        />
-        {errors.confirmPassword && <p className={errorClass}>{errors.confirmPassword.message}</p>}
-      </div>
-
       <button
         type="submit"
         disabled={isSubmitting}
@@ -135,12 +121,12 @@ export default function ResetPasswordForm({ token }) {
           'active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed',
         )}
       >
-        {isSubmitting ? 'Resetting...' : 'Reset Password'}
+        {isSubmitting ? 'Signing in...' : 'Sign in'}
       </button>
 
       <p className="text-center text-sm text-gray-500 dark:text-text-subtle pt-2 border-t border-gray-100 dark:border-border-light">
         <a href="/login" className="text-brand hover:text-brand-hover font-semibold transition-colors">
-          Back to login
+          Back to client login
         </a>
       </p>
     </form>

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import ResetPasswordForm from './ResetPasswordForm'
-import { api } from '../lib/api'
+import { api } from '../../lib/api'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
@@ -11,7 +11,7 @@ vi.mock('react-router-dom', async () => {
   return { ...actual, useNavigate: () => mockNavigate }
 })
 
-vi.mock('../lib/api', () => ({
+vi.mock('../../lib/api', () => ({
   api: {
     post: vi.fn().mockResolvedValue({
       success: true,

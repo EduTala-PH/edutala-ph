@@ -1,6 +1,18 @@
-import LoginForm from '../components/LoginForm'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
+import ForgotPasswordForm from '../../components/forms/ForgotPasswordForm'
 
-export default function Login() {
+export default function ForgotPassword() {
+  const { isAuthenticated, loading } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, loading, navigate])
+
   return (
     <div className="fixed inset-0 flex">
       <div className="relative hidden lg:flex w-1/2 flex-col items-center justify-center p-12 overflow-hidden bg-gradient-to-br from-brand via-brand-dark to-brand-darker">
@@ -15,9 +27,9 @@ export default function Login() {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full translate-x-1/3 translate-y-1/3" />
 
         <div className="relative max-w-md text-center">
-          <h1 className="text-3xl font-bold text-white mb-3">Welcome to EduTala PH</h1>
+          <h1 className="text-3xl font-bold text-white mb-3">Forgot Your Password?</h1>
           <p className="text-lg text-slate-300 mb-10">
-            Empowering Philippine education through innovative technology
+            No worries — we'll help you get back into your account
           </p>
 
           <div className="w-12 h-0.5 mx-auto mb-6 rounded-full" style={{ backgroundColor: 'var(--color-white-muted)' }} />
@@ -29,7 +41,7 @@ export default function Login() {
       </div>
 
       <div className="@container w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100 dark:from-surface dark:to-surface-alt">
-        <LoginForm />
+        <ForgotPasswordForm />
       </div>
     </div>
   )

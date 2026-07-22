@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { cn } from '../lib/utils'
+import { useAuth } from '../../context/AuthContext'
+import { cn } from '../../lib/utils'
 
 function MenuIcon() {
   return (

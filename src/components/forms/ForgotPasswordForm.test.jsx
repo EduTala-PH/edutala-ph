@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import ForgotPasswordForm from './ForgotPasswordForm'
-import { api } from '../lib/api'
+import { api } from '../../lib/api'
 
-vi.mock('../lib/api', () => ({
+vi.mock('../../lib/api', () => ({
   api: {
     post: vi.fn().mockResolvedValue({
       success: true,

@@ -6,8 +6,8 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Dashboard from './pages/Dashboard'
 import Teachers from './pages/Teachers'
-import Layout from './components/Layout'
-import ProtectedRoute from './components/ProtectedRoute'
+import Layout from './components/layout/Layout'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 export default function App() {
   return (

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import AdminLoginForm from '../components/AdminLoginForm'
+import AdminLoginForm from '../../components/forms/AdminLoginForm'
 
 export default function AdminLogin() {
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import ResetPasswordForm from '../components/ResetPasswordForm'
+import { useAuth } from '../../context/AuthContext'
+import ResetPasswordForm from '../../components/forms/ResetPasswordForm'
 
 export default function ResetPassword() {
   const { isAuthenticated, loading } = useAuth()

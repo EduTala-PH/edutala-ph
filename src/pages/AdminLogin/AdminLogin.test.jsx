@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
-import { AuthProvider } from '../context/AuthContext'
+import { AuthProvider } from '../../context/AuthContext'
 import AdminLogin from './AdminLogin'
 
 function Wrapper({ children }) {

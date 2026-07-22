@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
-import { cn } from '../lib/utils'
-import logo from '../assets/EduTalaPH_Logo.png'
+import { cn } from '../../lib/utils'
+import logo from '../../assets/EduTalaPH_Logo.png'
 
 function HomeIcon({ size = 20 }) {
   return (

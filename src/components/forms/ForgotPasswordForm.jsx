@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { api } from '../lib/api'
-import { cn } from '../lib/utils'
-import logo from '../assets/EduTalaPH_Logo.png'
+import { api } from '../../lib/api'
+import { cn } from '../../lib/utils'
+import logo from '../../assets/EduTalaPH_Logo.png'
 
 const schema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email address'),

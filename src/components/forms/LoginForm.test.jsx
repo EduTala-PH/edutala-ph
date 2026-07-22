@@ -2,14 +2,14 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
-import { AuthProvider } from '../context/AuthContext'
-import AdminLoginForm from './AdminLoginForm'
+import { AuthProvider } from '../../context/AuthContext'
+import LoginForm from './LoginForm'
 
-vi.mock('../lib/api', () => ({
+vi.mock('../../lib/api', () => ({
   api: {
     post: vi.fn().mockResolvedValue({
       success: true,
-      data: { access_token: 'mock-token', user: { email: 'admin@edutala.ph', name: 'Admin' } },
+      data: { access_token: 'mock-token', user: { email: 'test@school.edu.ph', name: 'Test' } },
     }),
   },
   setAccessToken: vi.fn(),
@@ -24,26 +24,29 @@ function Wrapper({ children }) {
 }
 
 function renderForm() {
-  return render(<AdminLoginForm />, { wrapper: Wrapper })
+  return render(<LoginForm />, { wrapper: Wrapper })
 }
 
-describe('AdminLoginForm', () => {
+describe('LoginForm', () => {
   it('renders all form fields', () => {
     renderForm()
     expect(screen.getByLabelText('Email')).toBeInTheDocument()
     expect(screen.getByLabelText('Password')).toBeInTheDocument()
-    expect(screen.getByText('Sign in')).toBeInTheDocument()
+    expect(screen.getByText('Remember me')).toBeInTheDocument()
+    expect(screen.getByText('Forgot password?')).toBeInTheDocument()
+    expect(screen.getByText("Don't have an account?")).toBeInTheDocument()
+    expect(screen.getByText('Login')).toBeInTheDocument()
   })
 
-  it('renders brand heading', () => {
+  it('shows brand name', () => {
     renderForm()
-    expect(screen.getByText('Admin Control')).toBeInTheDocument()
+    expect(screen.getByText('EduTala PH')).toBeInTheDocument()
   })
 
   it('shows validation errors on empty submit', async () => {
     const user = userEvent.setup()
     renderForm()
-    await user.click(screen.getByText('Sign in'))
+    await user.click(screen.getByText('Login'))
     expect(screen.getByText('Email is required')).toBeInTheDocument()
     expect(screen.getByText('Password must be at least 6 characters')).toBeInTheDocument()
   })
@@ -51,20 +54,23 @@ describe('AdminLoginForm', () => {
   it('shows validation error for short password', async () => {
     const user = userEvent.setup()
     renderForm()
-    await user.type(screen.getByLabelText('Email'), 'admin@edutala.ph')
+    await user.type(screen.getByLabelText('Email'), 'test@school.edu.ph')
     await user.type(screen.getByLabelText('Password'), '123')
-    await user.click(screen.getByText('Sign in'))
+    await user.click(screen.getByText('Login'))
     expect(screen.getByText('Password must be at least 6 characters')).toBeInTheDocument()
   })
 
-  it('renders back to client login link', () => {
+  it('renders forgot password link with correct href', () => {
     renderForm()
-    expect(screen.getByText('Back to client login')).toHaveAttribute('href', '/login')
+    expect(screen.getByText('Forgot password?')).toHaveAttribute(
+      'href',
+      '/forgot-password',
+    )
   })
 
-  it('does not render remember me checkbox', () => {
+  it('renders sign up link with correct href', () => {
     renderForm()
-    expect(screen.queryByText('Remember me')).not.toBeInTheDocument()
+    expect(screen.getByText('Sign up')).toHaveAttribute('href', '/signup')
   })
 
   it('toggles password visibility', async () => {
@@ -77,5 +83,10 @@ describe('AdminLoginForm', () => {
     expect(passwordInput).toHaveAttribute('type', 'text')
     await user.click(toggleButton)
     expect(passwordInput).toHaveAttribute('type', 'password')
+  })
+
+  it('renders remember me checkbox', () => {
+    renderForm()
+    expect(screen.getByText('Remember me')).toBeInTheDocument()
   })
 })
