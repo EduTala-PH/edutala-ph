@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import ResetPasswordForm from './ResetPasswordForm'
+import { api } from '../lib/api'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
@@ -81,5 +82,35 @@ describe('ResetPasswordForm', () => {
   it('renders back to login link with correct href', () => {
     renderForm()
     expect(screen.getByText('Back to login')).toHaveAttribute('href', '/login')
+  })
+
+  it('shows API error on reset failure', async () => {
+    api.post.mockResolvedValueOnce({
+      success: false,
+      error: { message: 'Invalid or expired token' },
+    })
+    const user = userEvent.setup()
+    renderForm()
+    await user.type(screen.getByLabelText('New Password'), 'newpassword123')
+    await user.type(screen.getByLabelText('Confirm New Password'), 'newpassword123')
+    await user.click(screen.getByRole('button', { name: 'Reset Password' }))
+    await waitFor(() => {
+      expect(screen.getByText('Invalid or expired token')).toBeInTheDocument()
+    })
+  })
+
+  it('shows default error on reset failure without message', async () => {
+    api.post.mockResolvedValueOnce({
+      success: false,
+      error: {},
+    })
+    const user = userEvent.setup()
+    renderForm()
+    await user.type(screen.getByLabelText('New Password'), 'newpassword123')
+    await user.type(screen.getByLabelText('Confirm New Password'), 'newpassword123')
+    await user.click(screen.getByRole('button', { name: 'Reset Password' }))
+    await waitFor(() => {
+      expect(screen.getByText('Something went wrong. Please try again.')).toBeInTheDocument()
+    })
   })
 })

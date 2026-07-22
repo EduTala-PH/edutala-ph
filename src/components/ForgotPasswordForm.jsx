@@ -15,6 +15,7 @@ export default function ForgotPasswordForm() {
   const [cooldown, setCooldown] = useState(0)
   const [apiError, setApiError] = useState(null)
   const timerRef = useRef(null)
+  const submittedEmailRef = useRef('')
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
@@ -48,7 +49,18 @@ export default function ForgotPasswordForm() {
       setApiError(res.error?.message || 'Something went wrong. Please try again.')
       return
     }
+    submittedEmailRef.current = data.email
     setSubmitted(true)
+    startCooldown()
+  }
+
+  const handleResend = async () => {
+    setApiError(null)
+    const res = await api.post('/api/v1/auth/forgot-password', { email: submittedEmailRef.current })
+    if (!res.success) {
+      setApiError(res.error?.message || 'Something went wrong. Please try again.')
+      return
+    }
     startCooldown()
   }
 
@@ -95,7 +107,7 @@ export default function ForgotPasswordForm() {
           ) : (
             <button
               type="button"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleResend}
               className={cn(
                 'w-full',
                 'bg-brand hover:bg-brand-hover active:bg-brand-active',
@@ -122,7 +134,7 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-md space-y-4 sm:space-y-5">
+    <form onSubmit={(e) => handleSubmit(onSubmit)(e)} noValidate className="w-full max-w-md space-y-4 sm:space-y-5">
       <div className="text-center mb-4 sm:mb-6">
         <img src={logo} alt="EduTala PH" className="h-16 sm:h-20 mx-auto mb-2 sm:mb-3" />
         <h2 className="text-xl sm:text-2xl tracking-tight text-gray-900 dark:text-text font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>Forgot Password</h2>
