@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: oklch(0.97 0.01 214);
+  --color-brand-100: oklch(0.93 0.03 214);
+  --color-brand-200: oklch(0.86 0.06 214);
+  --color-brand-300: oklch(0.78 0.09 214);
+  --color-brand-400: oklch(0.68 0.12 214);
+  --color-brand-500: oklch(0.58 0.14 214);
+  --color-brand-600: oklch(0.50 0.13 214);
+  --color-brand-700: oklch(0.46 0.12 214);
+  --color-brand-800: oklch(0.38 0.10 214);
+  --color-brand-900: oklch(0.30 0.08 214);
+  --color-brand-950: oklch(0.22 0.05 214);
+  --color-brand: oklch(0.58 0.14 214);
+  --color-brand-dark: oklch(0.50 0.13 214);
+  --color-brand-darker: oklch(0.46 0.12 214);
+  --color-brand-hover: color-mix(in oklch, var(--color-brand), black 12%);
+  --color-brand-active: color-mix(in oklch, var(--color-brand), black 20%);
+  --color-surface: oklch(0.98 0.01 260);
+  --color-surface-alt: oklch(0.96 0.01 260);
+  --color-text: oklch(0.15 0.02 260);
+  --color-text-muted: oklch(0.45 0.02 260);
+  --color-text-subtle: oklch(0.55 0.02 260);
+  --color-border: oklch(0.87 0.01 260);
+  --color-border-light: oklch(0.93 0.01 260);
+  --color-white-muted: oklch(1 0 0 / 0.4);
+  --color-white-bright: oklch(1 0 0 / 0.8);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@utility input {
+  @apply w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 dark:border-border rounded-xl bg-gray-50 dark:bg-surface-alt focus:bg-white dark:focus:bg-surface focus:ring-2 focus:ring-brand/30 focus:border-brand outline-hidden transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-text-subtle text-gray-900 dark:text-text text-sm sm:text-base;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+    --color-surface: oklch(0.13 0.02 260);
+    --color-surface-alt: oklch(0.18 0.02 260);
+    --color-text: oklch(0.93 0.01 260);
+    --color-text-muted: oklch(0.65 0.02 260);
+    --color-text-subtle: oklch(0.55 0.02 260);
+    --color-border: oklch(0.30 0.02 260);
+    --color-border-light: oklch(0.22 0.02 260);
+  }
+
+  h1, h2 {
+    font-family: var(--heading, system-ui, sans-serif);
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  h1 {
+    font-size: clamp(36px, 4vw, 56px);
+    letter-spacing: -1.68px;
+    margin: clamp(20px, 2vw, 32px) 0;
+  }
+
+  h2 {
+    font-size: clamp(20px, 2.5vw, 24px);
+    line-height: 118%;
+    letter-spacing: -0.24px;
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+  }
+}
