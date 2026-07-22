@@ -64,7 +64,7 @@ export default function NavBar({ onMenuClick, sidebarCollapsed, onToggleCollapse
     : 'U'
 
   return (
-    <nav className={cn('fixed top-0 left-0 right-0 h-16 bg-white dark:bg-surface-alt border-b border-border-light z-50 flex items-center px-4 lg:px-6 transition-all duration-300', sidebarCollapsed ? 'lg:left-16' : 'lg:left-64')}>
+    <nav className={cn('fixed top-0 left-0 right-0 h-21 bg-white dark:bg-surface-alt border-b border-border-light z-50 flex items-center px-4 lg:px-6 transition-all duration-300', sidebarCollapsed ? 'lg:left-[72px]' : 'lg:left-64')}>
       <button
         onClick={onMenuClick}
         className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-surface transition-colors text-text-muted"

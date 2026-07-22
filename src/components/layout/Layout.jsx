@@ -7,7 +7,7 @@ export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
-  const sidebarWidth = sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'
+  const sidebarWidth = sidebarCollapsed ? 'lg:pl-[72px]' : 'lg:pl-64'
 
   return (
     <div className="min-h-screen bg-surface">
@@ -21,7 +21,7 @@ export default function Layout({ children }) {
         onClose={() => setSidebarOpen(false)}
         collapsed={sidebarCollapsed}
       />
-      <main className={cn('pt-16 min-h-screen transition-all duration-300', sidebarWidth)}>
+      <main className={cn('pt-21 min-h-screen transition-all duration-300', sidebarWidth)}>
         {children}
       </main>
     </div>
