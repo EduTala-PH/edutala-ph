@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD EduTala PH Production Workflow
 
 on:
   push:
