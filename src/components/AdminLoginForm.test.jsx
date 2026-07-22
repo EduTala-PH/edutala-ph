@@ -1,9 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { AuthProvider } from '../context/AuthContext'
 import AdminLoginForm from './AdminLoginForm'
+
+vi.mock('../lib/api', () => ({
+  api: {
+    post: vi.fn().mockResolvedValue({
+      success: true,
+      data: { access_token: 'mock-token', user: { email: 'admin@edutala.ph', name: 'Admin' } },
+    }),
+  },
+  setAccessToken: vi.fn(),
+}))
 
 function Wrapper({ children }) {
   return (
@@ -55,5 +65,17 @@ describe('AdminLoginForm', () => {
   it('does not render remember me checkbox', () => {
     renderForm()
     expect(screen.queryByText('Remember me')).not.toBeInTheDocument()
+  })
+
+  it('toggles password visibility', async () => {
+    const user = userEvent.setup()
+    renderForm()
+    const passwordInput = screen.getByLabelText('Password')
+    expect(passwordInput).toHaveAttribute('type', 'password')
+    const toggleButton = document.querySelector('button[tabindex="-1"]')
+    await user.click(toggleButton)
+    expect(passwordInput).toHaveAttribute('type', 'text')
+    await user.click(toggleButton)
+    expect(passwordInput).toHaveAttribute('type', 'password')
   })
 })
