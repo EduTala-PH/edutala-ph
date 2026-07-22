@@ -1,8 +1,15 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import { AuthProvider } from '../context/AuthContext'
 import ResetPassword from './ResetPassword'
+import { api } from '../lib/api'
+
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return { ...actual, useNavigate: () => mockNavigate }
+})
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -51,5 +58,19 @@ describe('ResetPassword page', () => {
   it('renders the quote', () => {
     renderPage()
     expect(screen.getByText(/Education is the most powerful weapon/)).toBeInTheDocument()
+  })
+
+  it('redirects authenticated users to dashboard', async () => {
+    api.post.mockResolvedValueOnce({
+      success: true,
+      data: {
+        access_token: 'mock-token',
+        user: { email: 'test@school.edu.ph', name: 'Test' },
+      },
+    })
+    renderPage()
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard', { replace: true })
+    })
   })
 })

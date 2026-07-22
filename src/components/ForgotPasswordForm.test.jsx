@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import ForgotPasswordForm from './ForgotPasswordForm'
+import { api } from '../lib/api'
 
 vi.mock('../lib/api', () => ({
   api: {
@@ -61,5 +62,44 @@ describe('ForgotPasswordForm', () => {
   it('renders back to login link with correct href', () => {
     renderForm()
     expect(screen.getByText('Back to login')).toHaveAttribute('href', '/login')
+  })
+
+  it('shows API error on submit failure', async () => {
+    api.post.mockResolvedValueOnce({
+      success: false,
+      error: { message: 'Server error occurred' },
+    })
+    const user = userEvent.setup()
+    renderForm()
+    await user.type(screen.getByLabelText('Email'), 'test@school.edu.ph')
+    await user.click(screen.getByText('Send Reset Link'))
+    await waitFor(() => {
+      expect(screen.getByText('Server error occurred')).toBeInTheDocument()
+    })
+  })
+
+  it('shows default error on submit failure without message', async () => {
+    api.post.mockResolvedValueOnce({
+      success: false,
+      error: {},
+    })
+    const user = userEvent.setup()
+    renderForm()
+    await user.type(screen.getByLabelText('Email'), 'test@school.edu.ph')
+    await user.click(screen.getByText('Send Reset Link'))
+    await waitFor(() => {
+      expect(screen.getByText('Something went wrong. Please try again.')).toBeInTheDocument()
+    })
+  })
+
+  it('shows cooldown text in success state', async () => {
+    renderForm()
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText('Email'), 'test@school.edu.ph')
+    await user.click(screen.getByText('Send Reset Link'))
+    await waitFor(() => {
+      expect(screen.getByText('Check Your Email')).toBeInTheDocument()
+    })
+    expect(screen.getByText(/Resend available in/)).toBeInTheDocument()
   })
 })
